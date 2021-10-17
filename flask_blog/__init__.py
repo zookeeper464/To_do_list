@@ -1,9 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
+from forms import ReigistrationForm, LoginForm
 # Flask는 기본 앱을 실행하기 위한 웹 변수
 # reder_template는 flask에서 html을 호출하기 위한 모듈
 # __init__.py 파일 과 templates 폴더는 같은 위치에 존재해야 한다.
 
 app = Flask(__name__) # 가장 기본적인 flask 앱 설정
+
+app.config['SECRET_KEY'] = 'd41aadc3731760a044e2ad22097f44df' # flask app에 대한 환경설정
+app.config['FLASK_DEBUG'] = 1
 
 posts = [
     {
@@ -31,3 +35,13 @@ def hello():
 @app.route('/about') # 새로운 url 대한 설정
 def about():
     return render_template('about.html',title='About')
+
+@app.route('/register') # 회원가입 url 대한 설정
+def register():
+    form = ReigistrationForm()
+    return render_template('register.html',title='Register', form=form)
+    
+@app.route('/login') # 로그인 url 대한 설정
+def login():
+    form = LoginForm()
+    return render_template('login.html',title='Login', form=form)

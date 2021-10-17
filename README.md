@@ -10,4 +10,7 @@
  - <link rel='stylesheet' type='text/css', href="{{ url_for('static',filename='main.css') }}"> 을 활용하여 가져온다. type을 통해 설정 href를 통해 주소를 설정한다.
  - 어떤 css를 활용하고 가져올지는 백엔드 개발자를 목표로 하기 때문에 다음으로 미루고 기존에 사용되는 형태의 css를 가져와 활용하도록 한다.
 
-3. 
+3. flask_wtf모듈에서 로그인과 관련된 기능에 대해서 공부하고 이해했다.
+ - FlaskForm은 class 형태로 flask의 기능을 가져오기 위해서 상속하는 용도로 사용한다.
+ - wtforms 에서 변수를 다룬다.(StringField, validators.DataRequired)
+ - 모르는 모듈의 함수 내용에 대해서 이해할 수 있게 되었다.(dir(),help()를 활용한다.)
