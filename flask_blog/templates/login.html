@@ -1,4 +1,59 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <h1>About Page</h1>
+    <div class='content-secion'>
+        <form method='POST' action="">
+            {{ form.hidden_tag() }}
+            <fieldset class='form-group'>
+                <legend class='border-bottom mb-4'>Log In</legend>
+                <!-- form 에서 가져올 내용을 하나씩 정리하는 부분 -->
+                <!-- 라벨과 forms.py의 변수명(Stringfield 내부의 스트링이 아니다.)이 모두 일치해야 한다. -->
+                <!-- 불러온 데이터에 대해서 class 지정을 다음과 같이 설정해준다.-->
+                <div class='form-group'>
+                    {{ form.email.label(class='form-control-label') }}
+                    <!-- form.username.errors에는 이미 에러에 해당하는 문구가 저장되어 있다. -->
+                    <!-- 클래스명을 다음과 같이 설정하는 이유가 있다. -->
+                    {% if form.email.errors %}
+                        {{ form.email(class='form-control form-control-lg is-invalid') }}
+                        <div class='invalid-feedback'>
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class='form-control form-control-lg') }}
+                    {% endif %}
+                </div>
+                <div class='form-group'>
+                    {{ form.password.label(class='form-control-label') }}
+                    {% if form.password.errors %}
+                        {{ form.password(class='form-control form-control-lg is-invalid') }}
+                        <div class='invalid-feedback'>
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class='form-control form-control-lg') }}
+                    {% endif %}
+                </div>
+                <div class='form-check'>
+                    {{ form.remember(class='form-check-input')}}
+                    {{ form.remember.label(class='form-check-label')}}
+                </div>
+            </fieldset>
+            <div class='form-group'>
+                {{ form.submit(class='btn btn-outline-info') }}
+            </div>
+            <small class='text-muted ml-2'>
+                <a href="#">Forgot Password?</a>
+            </small>
+        </form>
+    </div>
+    <div class='border-top pt-3'>
+        <!-- small은 글씨를 작게 만드는 헤더다. -->
+        <small class='text-muted'>
+            <!-- href를 통해 post 명령을 서버에 보낸다. -->
+            Need An Account? <a class='ml-2' href="{{ url_for('register') }}">Sign Up Now</a>
+        </small>
+    </div>
 {% endblock content %}
