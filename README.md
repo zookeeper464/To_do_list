@@ -31,4 +31,8 @@
 
 6. flask_bcrypt모듈에서 데이터를 해시로 확인할 수 있는 방법에 대해서 공부하고 이해했다.
  - from flask_bcrypt import Bcrypt, bcrypt = Bcrypt(), hash_code = bcrypt.generate_password_hash('string'), hash_code.decode('utf-8'), bcrypt.check_password_hash(hash_code.decode('utf-8),'string')이 어떤 방식으로 동작하는지 이해한다.
- 
+ - 회원가입한 내용을 db에 저장하는 방식에 대해서 이해한다.
+ - 데이터가 충돌하는 경우에 대해서 에러 처리를 할 수 있도록 한다. 이를 forms에서 처리한다.
+ (validate_(변수명) 참고)
+ - request 모듈에 대해서 이해하고 활용할 수 있도록 추가 공부해야 한다.
+ - login_user, current_user, logout_user, login_required에 대해서 이해하고 flask에서 활용할 수 있다.
