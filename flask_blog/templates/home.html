@@ -3,12 +3,15 @@
 {% block content %}
     {% for post in posts %}
         <article class="media content-section">
+            <img class='rounded-circle article-img' src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
             <div class="media-body">
             <div class="article-metadata">
-                <a class="mr-2" href="#">{{ post.author }}</a>
-                <small class="text-muted">{{ post.date_posted }}</small>
+                <a class="mr-2" href="#">{{ post.author.username }}</a>
+                <!-- author의 내용을 보두 부르는 것 -> username만 부르는 것 -->
+                <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                <!-- 현재시각 초의 소숫자리까지 출력 -> 년월일까지만 부르는 것 -->
             </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+            <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content }}</p>
             </div>
         </article>

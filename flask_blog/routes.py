@@ -1,30 +1,16 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from PIL import Image
+import flask_sqlalchemy
 from flask_blog import app, bcrypt, db
-from .forms import ReigistrationForm, LoginForm, UpdateAccountForm
+from .forms import ReigistrationForm, LoginForm, UpdateAccountForm, PostForm
 from .models import User, Post
 import secrets, os
-
-posts = [
-    {
-        'author' : 'zookeeper_464',
-        'title' : 'to_do_list',
-        'content' : 'to make flask_to_do_list',
-        'date_posted' : '2021-10-15'
-    },
-    
-    {
-        'author' : 'zookeeper_464',
-        'title' : 'to_do_list(1)',
-        'content' : 'to make flask_to_do_list second',
-        'date_posted' : '2021-10-16'
-    }
-]
 
 @app.route('/') # 기본인덱스에 대한 설정
 @app.route('/home') # route는 여러개 설정해도 좋다.
 def home():
+    posts = Post.query.all()
     return render_template('home.html', posts=posts)
     # posts는 python에서 html로 보내는 변수를 의미한다.
     # posts가 아닌 다른 변수명을 활용하여 html에서 받아도 상관없다.
@@ -88,7 +74,7 @@ def save_picture (form_picture):
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
     # 그림 데이터를 가져와 파일과 경로를 지정하는 과정
-    
+
     output_size = (125,125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
@@ -98,7 +84,7 @@ def save_picture (form_picture):
     return picture_fn
 
 @app.route('/account', methods=['GET','POST'])
-@login_required
+@login_required # 로그인이 되어 있을때만 들어갈 수 있게 막는 함수
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
@@ -121,3 +107,57 @@ def account():
     image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
     return render_template('account.html',title='Account', 
                             image_file=image_file, form=form)
+
+
+@app.route('/post/new', methods=['GET','POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content = form.content.data, author=current_user)
+        # db에는 author로 연결된 부분이 구성되어 있으므로 author라고 적어야 한다.
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html',title='New Post',
+                            form=form, legend='New Post')
+
+@app.route('/post/<int:post_id>')
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html',title=post.title, post=post)
+
+@app.route('/post/<int:post_id>/update', methods=['GET','POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403) # 플라스크의 모듈로 오류 반응을 만들기 위한 함수
+    
+    form = PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash('Your post has been updated!', 'success')
+        return redirect(url_for('post',post_id=post.id))
+
+    elif request.method == 'GET':
+        form.title.data = post.title
+        form.content.data = post.content
+
+    return render_template('create_post.html', title='Update Post',
+                            form=form, legend='Update Post')
+
+@app.route('/post/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your post has been deleted!', 'success')
+    return redirect(url_for('home'))

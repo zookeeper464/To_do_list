@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class='content-secion'>
+        <form method='POST' action="">
+            {{ form.hidden_tag() }}
+            <fieldset class='form-group'>
+                <legend class='border-bottom mb-4'>{{ legend }}</legend>
+                <!-- form 에서 가져올 내용을 하나씩 정리하는 부분 -->
+                <!-- 라벨과 forms.py의 변수명(Stringfield 내부의 스트링이 아니다.)이 모두 일치해야 한다. -->
+                <!-- 불러온 데이터에 대해서 class 지정을 다음과 같이 설정해준다.-->
+                <div class='form-group'>
+                    {{ form.title.label(class='form-control-label') }}
+                    <!-- form.username.errors에는 이미 에러에 해당하는 문구가 저장되어 있다. -->
+                    <!-- 클래스명을 다음과 같이 설정하는 이유가 있다. -->
+                    {% if form.title.errors %}
+                        {{ form.title(class='form-control form-control-lg is-invalid') }}
+                        <div class='invalid-feedback'>
+                            {% for error in form.title.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title(class='form-control form-control-lg') }}
+                    {% endif %}
+                </div>
+                <div class='form-group'>
+                    {{ form.content.label(class='form-control-label') }}
+                    {% if form.content.errors %}
+                        {{ form.content(class='form-control form-control-lg is-invalid') }}
+                        <div class='invalid-feedback'>
+                            {% for error in form.content.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.content(class='form-control form-control-lg') }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class='form-group'>
+                {{ form.submit(class='btn btn-outline-info') }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
