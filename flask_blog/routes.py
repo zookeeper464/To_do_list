@@ -10,7 +10,8 @@ import secrets, os
 @app.route('/') # 기본인덱스에 대한 설정
 @app.route('/home') # route는 여러개 설정해도 좋다.
 def home():
-    posts = Post.query.all()
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page,per_page=5)
     return render_template('home.html', posts=posts)
     # posts는 python에서 html로 보내는 변수를 의미한다.
     # posts가 아닌 다른 변수명을 활용하여 html에서 받아도 상관없다.
@@ -161,3 +162,13 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('home'))
+
+@app.route('/user/<string:username>')
+def user_posts(username): # 위에서 받는 변수는 <>내부에 데이터 타입과 함께 넣고 변수는 함수에 넣어준다.
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username=username).first_or_404()
+    # first_or_404는 데이터가 존재하면 firt를 없다면 404를 실행하는 함수다.
+    posts = Post.query.filter_by(author=user).\
+                    order_by(Post.date_posted.desc()).\
+                    paginate(page=page,per_page=5)
+    return render_template('user_posts.html', posts=posts, user=user)

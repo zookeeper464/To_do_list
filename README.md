@@ -54,3 +54,11 @@
  - <post_id>를 활용하면 post_id에 해당하는 데이터를 가져올 수 있다. <int:post_id>는 가져온 데이터를 정수형을 바꿔준다. 하지만 : 양쪽에 띄어쓰기를 해선 안된다.
  - flask의 모듈 abort를 통해 특정 오류를 띄울 수 있다. (403 등)
  - 부스트랩에서 가져온 html 모듈을 사용한다. (data-toggle='modal' data-target='#exampleModal')(example에 여러기능을 넣으면 된다. - 여기선 delete) (추가로 css를 넣으면 된다.)
+
+9. paginate를 활용하여 데이터를 정렬하여 보여줄 수 있도록 한다.
+ - request.args.get('page', 1, type=int)를 통해 데이터가 현재 1페이지에 있다는것을 저장한다.
+ - Post.query.paginate(page=page,per_page=5)를 통해 데이터를 페이지당 5개를 보여주는 것을 저장한다.
+ - query문에서 order_by()를 활용할 수 있다.
+ - url에서 <>에 변수를 추가한다면 <>에 데이터타입:변수면을 넣고 함수 인자에 변수를 넣는다.
+ - first_or_404는 get_or_404와 같이 데이터가 없을 경우 404 에러를 띄우는 함수다.
+ 
