@@ -1,5 +1,8 @@
 from datetime import datetime
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask import current_app
 from flask_login import UserMixin
+
 from flask_blog import db, login_manager
 
 @login_manager.user_loader # 유저가 있다면 불러오는 과정에 대한 설정
@@ -17,6 +20,23 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy=True)
     # User테이블과 Post테이블을 연결하는 변수설정
     # 연결하기 위한 변수명, 그 내부에는 연결하고자하는 테이블명, backref등이 필요하다.
+
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+        # 암호화된 비밀키 생성하고 return
+        
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(current_app.config["SECRET_KEY"])
+        try:
+            user_id = s.loads(token)['user_id']
+            return User.query.get(user_id)
+            
+        except:
+            return None
+
+        # 더미 데이터가 맞는지 틀린지 확인한다.
 
     def __repr__(self): # User 테이블의 표현에 대한 함수
         return f"User ('{self.username}','{self.email}','{self.image_file}')"

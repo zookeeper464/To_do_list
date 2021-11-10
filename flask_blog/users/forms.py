@@ -1,17 +1,17 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
-from .models import User
+from flask_blog.models import User
 
 # 회원가입시 필요한 데이터 처리에 대한 클래스 설정
 class ReigistrationForm(FlaskForm): # DataRequired를 통해 변수 입력
     # 
     username = StringField('Username',
-                        validators=[DataRequired(),Length(min=2,max=20)])
+                validators=[DataRequired(),Length(min=2,max=20)])
     email = StringField('Email',
-                        validators=[DataRequired(),Email()])
+                validators=[DataRequired(),Email()])
                         # Email을 통해 이메일 여부 확인
 
     password = PasswordField('Password', validators=[DataRequired()])
@@ -34,7 +34,7 @@ class ReigistrationForm(FlaskForm): # DataRequired를 통해 변수 입력
 # 로그인시 필요한 데이터 처리에 대한 클래스 설정
 class LoginForm(FlaskForm):
     email = StringField('Email',
-                        validators=[DataRequired(),Email()])
+                validators=[DataRequired(),Email()])
 
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
@@ -43,9 +43,9 @@ class LoginForm(FlaskForm):
 # account 데이터 변경을 위한 데이터 처리에 대한 클래스
 class UpdateAccountForm(FlaskForm): # DataRequired를 통해 변수 입력
     username = StringField('Username',
-                        validators=[DataRequired(),Length(min=2,max=20)])
+                validators=[DataRequired(),Length(min=2,max=20)])
     email = StringField('Email',
-                        validators=[DataRequired(),Email()])
+                validators=[DataRequired(),Email()])
 
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg','png','jpeg'])])
 
@@ -64,9 +64,19 @@ class UpdateAccountForm(FlaskForm): # DataRequired를 통해 변수 입력
             if user:
                 raise ValidationError('That email is taken. Please choose a differnt one.')
 
+class RequestResetForm(FlaskForm): # 패스워드를 재설정하는 클래스
+    email = StringField('Email',
+            validators=[DataRequired(),Email()])
+    submit = SubmitField('Request Password Reset')
 
-class PostForm(FlaskForm): # 작업을 명령하는 클래스
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
+    def validate_email(self,email):
+        user = User.query.filter_by(email=email.data).first()
+        if user == None:
+            raise ValidationError('There is no account with that email. You must register first.')
 
-    submit = SubmitField('Post')
+class ResetPasswordForm(FlaskForm): # 패스워드를 제대로 입력했는지 확인하는 클래스
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                        validators=[DataRequired(), EqualTo('password')])
+
+    submit = SubmitField('Reset Password')

@@ -61,4 +61,21 @@
  - query문에서 order_by()를 활용할 수 있다.
  - url에서 <>에 변수를 추가한다면 <>에 데이터타입:변수면을 넣고 함수 인자에 변수를 넣는다.
  - first_or_404는 get_or_404와 같이 데이터가 없을 경우 404 에러를 띄우는 함수다.
- 
+
+10. itsdangerous에서 암호화와 관련된 모듈을 공부하고 이해한다.
+ - TimedJSONWebSignatureSerializer를 통해 데이터를 암호화하여 확인할 수 있다.
+ - app.config['SECRET_KEY']를 설정하여 Serializer을 확인할 수 있다.
+ - s.loads와 s.dumps를 활용하여 데이터의 일치여부를 확인하고 이해한다.
+ - get_reset_token, verify_reset_token를 통해 user_id를 판단한다.
+ - flask-mail은 conda에 설치되어 있지 않기 때문에 conda에서 가상환경을 관리하는 파일에 들어가 공식문서에 적힌대로 모듈을 다운받아 설치한다.
+ - flask-mail을 통해 보내는 메일과 내용을 설정할 수 있다.
+ - flask-mail을 활용하여 메일을 보내려고 했지만 오류가 발생한다. 검색하면 보안문제일 가능성이 매우 크다.
+ (smtplib.SMTPSenderRefused: (530, b'5.7.0 Authentication Required. Learn more at\n5.7.0  https://support.google.com/mail/?p=WantAuthError ne22sm3150197pjb.18 - gsmtp', 'noreply@demo.com'))
+
+11. bluepoint를 활용하여 코드를 깔끔하게 정리하고 관리하기 쉽게 만든다.
+ - bluepoint를 활용하여 forms,routes를 각각 다른 파일에서 관리할 수 있도록 저장한다.
+ - bluepoint를 활용할 수 있도록 기존의 db,flask,bcrypt,login_manager,email 등 변수를 작성하는 방법을 이해한다.
+ - flask의 환경설정을 저장할 수 있는 config.py를 생성하여 환경설정 내용을 따로 관리할 수 있도록 한다.
+
+ - AttributeError: 'NoneType' object has no attribute 'drivername' 라는 에러가 나면서 /home을 호출할때 Post의 내용을 가져올 수 없다고 나온다. => 내용이 바뀐것이 없기 때문에 변수가 틀렸다고 생각한다.
+ - RuntimeError: A secret key is required to use CSRF. 라는 에러가 나면서 /login, /register를 호출할 수 없다고 나온다. => config.py가 문제일 것이라고 생각한다.
