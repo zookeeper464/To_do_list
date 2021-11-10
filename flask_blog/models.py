@@ -29,13 +29,10 @@ class User(db.Model, UserMixin):
     @staticmethod
     def verify_reset_token(token):
         s = Serializer(current_app.config["SECRET_KEY"])
-        try:
-            user_id = s.loads(token)['user_id']
-            return User.query.get(user_id)
-            
-        except:
-            return None
+        try: user_id = s.loads(token)['user_id']
+        except: return None
 
+        return User.query.get(user_id)
         # 더미 데이터가 맞는지 틀린지 확인한다.
 
     def __repr__(self): # User 테이블의 표현에 대한 함수
@@ -51,4 +48,4 @@ class Post(db.Model):
     # Post 테이블에 컬럼에 대한 설정이다.
 
     def __repr__(self): # Post 테이블의 표현에 대한 함수
-        return f"Post ('{self.title}','{self.date_posted}')"
+        return f"Post('{self.title}', '{self.date_posted}')"    
